@@ -210,8 +210,6 @@ namespace HoloToolkit.Unity
             if (TryGetGazeHitPosition(out gazeHitPosition))
             {
                 focusPointDistance = (gazeOrigin - gazeHitPosition).magnitude;
-                var nearClipPlane = CameraCache.Main.nearClipPlane;
-                focusPointDistance = Mathf.Max(focusPointDistance, nearClipPlane);
             }
             else
             {

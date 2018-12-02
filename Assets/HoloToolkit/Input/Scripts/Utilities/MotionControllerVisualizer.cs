@@ -62,9 +62,6 @@ namespace HoloToolkit.Unity.InputModule
 
         public event Action<MotionControllerInfo> OnControllerModelLoaded;
         public event Action<MotionControllerInfo> OnControllerModelUnloaded;
-
-        private bool leftModelIsAlternate = false;
-        private bool rightModelIsAlternate = false;
 #endif
 
 #if UNITY_EDITOR_WIN
@@ -77,6 +74,14 @@ namespace HoloToolkit.Unity.InputModule
             base.Awake();
 
 #if UNITY_WSA && UNITY_2017_2_OR_NEWER
+            foreach (var sourceState in InteractionManager.GetCurrentReading())
+            {
+                if (sourceState.source.kind == InteractionSourceKind.Controller)
+                {
+                    StartTrackingController(sourceState.source);
+                }
+            }
+
             Application.onBeforeRender += Application_onBeforeRender;
 
             if (GLTFMaterial == null)
@@ -111,11 +116,6 @@ namespace HoloToolkit.Unity.InputModule
             InteractionManager.InteractionSourceDetected -= InteractionManager_InteractionSourceDetected;
             InteractionManager.InteractionSourceLost -= InteractionManager_InteractionSourceLost;
             Application.onBeforeRender -= Application_onBeforeRender;
-
-            foreach (MotionControllerInfo controllerInfo in controllerDictionary.Values)
-            {
-                Destroy(controllerInfo.ControllerParent);
-            }
 #endif
         }
 
@@ -123,29 +123,16 @@ namespace HoloToolkit.Unity.InputModule
         {
             // NOTE: This work is being done here to present the most correct rendered location of the controller each frame.
             // Any app logic depending on the controller state should happen in Update() or using InteractionManager's events.
-            // We don't want to potentially start loading a new controller model in this call, since onBeforeRender shouldn't
-            // do much work for performance reasons.
-            UpdateControllerState(false);
+            UpdateControllerState();
         }
 
-        private void UpdateControllerState(bool createNewControllerIfNeeded = true)
+        private void UpdateControllerState()
         {
 #if UNITY_WSA && UNITY_2017_2_OR_NEWER
             foreach (var sourceState in InteractionManager.GetCurrentReading())
             {
-                if (sourceState.source.kind != InteractionSourceKind.Controller)
-                {
-                    continue;
-                }
-
-                string key = GenerateKey(sourceState.source);
-                if (createNewControllerIfNeeded && !controllerDictionary.ContainsKey(key) && !loadingControllers.Contains(key))
-                {
-                    StartTrackingController(sourceState.source);
-                }
-
                 MotionControllerInfo currentController;
-                if (controllerDictionary.TryGetValue(key, out currentController))
+                if (sourceState.source.kind == InteractionSourceKind.Controller && controllerDictionary.TryGetValue(GenerateKey(sourceState.source), out currentController))
                 {
                     if (AnimateControllerModel)
                     {
@@ -249,8 +236,7 @@ namespace HoloToolkit.Unity.InputModule
             if (source.kind == InteractionSourceKind.Controller)
             {
                 MotionControllerInfo controllerInfo;
-                string key = GenerateKey(source);
-                if (controllerDictionary != null && controllerDictionary.TryGetValue(key, out controllerInfo))
+                if (controllerDictionary != null && controllerDictionary.TryGetValue(GenerateKey(source), out controllerInfo))
                 {
                     if (OnControllerModelUnloaded != null)
                     {
@@ -260,22 +246,10 @@ namespace HoloToolkit.Unity.InputModule
                     if (controllerInfo.Handedness == InteractionSourceHandedness.Left)
                     {
                         leftControllerModel = null;
-
-                        if (!AlwaysUseAlternateLeftModel && leftModelIsAlternate)
-                        {
-                            controllerDictionary.Remove(key);
-                            Destroy(controllerInfo.ControllerParent);
-                        }
                     }
                     else if (controllerInfo.Handedness == InteractionSourceHandedness.Right)
                     {
                         rightControllerModel = null;
-
-                        if (!AlwaysUseAlternateRightModel && rightModelIsAlternate)
-                        {
-                            controllerDictionary.Remove(key);
-                            Destroy(controllerInfo.ControllerParent);
-                        }
                     }
 
                     controllerInfo.ControllerParent.SetActive(false);
@@ -406,15 +380,6 @@ namespace HoloToolkit.Unity.InputModule
 
             yield return sceneImporter.Load();
 
-            if (source.handedness == InteractionSourceHandedness.Left)
-            {
-                leftModelIsAlternate = false;
-            }
-            else if (source.handedness == InteractionSourceHandedness.Right)
-            {
-                rightModelIsAlternate = false;
-            }
-
             FinishControllerSetup(controllerModelGameObject, source.handedness, GenerateKey(source));
         }
 
@@ -424,12 +389,10 @@ namespace HoloToolkit.Unity.InputModule
             if (source.handedness == InteractionSourceHandedness.Left && AlternateLeftController != null)
             {
                 controllerModelGameObject = Instantiate(AlternateLeftController);
-                leftModelIsAlternate = true;
             }
             else if (source.handedness == InteractionSourceHandedness.Right && AlternateRightController != null)
             {
                 controllerModelGameObject = Instantiate(AlternateRightController);
-                rightModelIsAlternate = true;
             }
             else
             {
@@ -449,7 +412,7 @@ namespace HoloToolkit.Unity.InputModule
         {
             var parentGameObject = new GameObject
             {
-                name = dictionaryKey + "Controller"
+                name = handedness + "Controller"
             };
 
             parentGameObject.transform.parent = transform;
