@@ -224,23 +224,9 @@ GameObject:
   - component: {fileID: 114973635987018128}
   - component: {fileID: 54576555757049152}
   - component: {fileID: 114634228156941660}
+  - component: {fileID: 114420420972237016}
   m_Layer: 0
   m_Name: ReichsrevolverM1879
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!1 &153796
-GameObject:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 429722}
-  m_Layer: 0
-  m_Name: Reloader
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -415,6 +401,7 @@ GameObject:
   m_Component:
   - component: {fileID: 430518}
   - component: {fileID: 136543524458958684}
+  - component: {fileID: 114669854373486490}
   m_Layer: 0
   m_Name: Cylinder
   m_TagString: Untagged
@@ -489,20 +476,6 @@ Transform:
   m_Father: {fileID: 464544}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!4 &429722
-Transform:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 153796}
-  m_LocalRotation: {x: -0.00000015771832, y: -0.00000005960464, z: 0.00000006732532,
-    w: 1}
-  m_LocalPosition: {x: 0.013, y: -0.073979184, z: 0.04021709}
-  m_LocalScale: {x: 1.005176, y: 0.994857, z: 1}
-  m_Children: []
-  m_Father: {fileID: 477262}
-  m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &430518
 Transform:
   m_ObjectHideFlags: 1
@@ -555,15 +528,15 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 150636}
-  m_LocalRotation: {x: 0.1106159, y: 0.1106159, z: 0.69840115, w: 0.69840115}
-  m_LocalPosition: {x: -0.3646, y: 1.0381, z: 0.5937}
+  m_LocalRotation: {x: 0.10698723, y: 0.11412927, z: 0.6754906, w: 0.7205837}
+  m_LocalPosition: {x: -0.3646, y: 1.03, z: 0.5937}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 477262}
   - {fileID: 483660}
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 18, z: 86.3}
 --- !u!4 &449848
 Transform:
   m_ObjectHideFlags: 1
@@ -601,7 +574,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 477262}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &464114
 Transform:
@@ -700,7 +673,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 477262}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &477262
 Transform:
@@ -714,7 +687,6 @@ Transform:
   m_Children:
   - {fileID: 430518}
   - {fileID: 423734}
-  - {fileID: 429722}
   - {fileID: 475360}
   - {fileID: 459952}
   m_Father: {fileID: 439302}
@@ -1365,7 +1337,7 @@ SkinnedMeshRenderer:
   m_Bones:
   - {fileID: 477262}
   - {fileID: 430518}
-  - {fileID: 429722}
+  - {fileID: 0}
   - {fileID: 423734}
   - {fileID: 459952}
   - {fileID: 475360}
@@ -1415,6 +1387,19 @@ MeshCollider:
   m_CookingOptions: 14
   m_SkinWidth: 0.01
   m_Mesh: {fileID: 4300000, guid: 3eac9019b1b6d9b45babfad0a433e676, type: 3}
+--- !u!114 &114420420972237016
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 150636}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ba1eb098b83bdd49af0900e1d4ae815, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  revRotSpeed: 0
+  cylTr: {fileID: 430518}
 --- !u!114 &114634228156941660
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1428,6 +1413,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   grabSpot: {fileID: 0}
   grabStyle: 0
+--- !u!114 &114669854373486490
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 199572}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 770b61a62b9374346b5def8bd2b993fd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114973635987018128
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1466,7 +1462,7 @@ CapsuleCollider:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 199572}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   m_Radius: 0.005
   m_Height: 0.01
