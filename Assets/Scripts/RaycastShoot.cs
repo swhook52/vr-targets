@@ -13,6 +13,8 @@ public class RaycastShoot: MonoBehaviour
     private AudioSource gunAudio;                                       // Reference to the audio source which will play our shooting sound effect
     private LineRenderer laserLine;                                     // Reference to the LineRenderer component which will display our laserline
     private float nextFire;                                             // Float to store the time the player will be allowed to fire again, after firing
+    private Animator animator;
+    private bool hammerPulled;
 
     void Start()
     {
@@ -21,6 +23,8 @@ public class RaycastShoot: MonoBehaviour
 
         // Get and store a reference to our AudioSource component
         gunAudio = GetComponent<AudioSource>();
+
+        animator = GetComponent<Animator>();
     }
 
 
@@ -29,6 +33,9 @@ public class RaycastShoot: MonoBehaviour
         // Check if the player has pressed the fire button and if enough time has elapsed since they last fired
         if (Input.GetButtonDown("Fire1") && Time.time > nextFire)
         {
+            hammerPulled = false;
+            animator.SetTrigger("Shot2");
+
             // Update the time when our player can fire next
             nextFire = Time.time + fireRate;
 
@@ -69,6 +76,12 @@ public class RaycastShoot: MonoBehaviour
                 // If we did not hit anything, set the end of the line to a position directly in front of the camera at the distance of weaponRange
                 laserLine.SetPosition(1, gunEnd.position + (gunEnd.transform.forward * weaponRange));
             }
+        }
+
+        if (Input.GetButtonDown("PullHammerLeft"))
+        {
+            hammerPulled = true;
+            animator.SetTrigger("PrepareForShooting");
         }
     }
 
