@@ -58,7 +58,6 @@ GameObject:
   - component: {fileID: 23817128999133016}
   - component: {fileID: 135903603387735520}
   - component: {fileID: 54272733759562060}
-  - component: {fileID: 114916960133224310}
   m_Layer: 0
   m_Name: Grabber Left
   m_TagString: Untagged
@@ -73,7 +72,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1204260932075554}
   m_LocalRotation: {x: 0.3197863, y: 0, z: 0, w: 0.94748974}
-  m_LocalPosition: {x: 0, y: -4.25, z: 7.7}
+  m_LocalPosition: {x: 0, y: -3.77, z: 3.99}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4987132152911980}
@@ -86,8 +85,8 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1537042835253326}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.7, z: 8}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0, y: -3.5, z: 5.4}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_Children: []
   m_Father: {fileID: 4987132152911980}
   m_RootOrder: 1
@@ -99,8 +98,8 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1625182844626852}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.1, z: 0}
-  m_LocalScale: {x: 0.01, y: 0.01, z: 0.01}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.02, y: 0.02, z: 0.02}
   m_Children:
   - {fileID: 4276455336093160}
   - {fileID: 4579600165463076}
@@ -228,24 +227,6 @@ MonoBehaviour:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1537042835253326}
   m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0b28d4c5e55448746bfb3379b5741ec9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  grabAttachSpot: {fileID: 4276455336093160}
-  strength: 1
-  handedness: 1
-  grabbableLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  pressType: 3
---- !u!114 &114916960133224310
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1625182844626852}
-  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0b28d4c5e55448746bfb3379b5741ec9, type: 3}
   m_Name: 

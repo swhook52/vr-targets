@@ -13,9 +13,13 @@ namespace HoloToolkit.Unity.InputModule.Examples.Grabbables
         protected override void StartGrab(BaseGrabber grabber)
         {
             base.StartGrab(grabber);
+            transform.position = new Vector3(0, 0, 0);
+            Debug.Log(transform.position);
             transform.SetParent(grabber.GrabHandle);
+
             gameObject.GetComponent<Rigidbody>().isKinematic = true;
             transform.rotation = transform.parent.rotation;
+            Debug.Log(transform.position);
         }
 
         protected override void EndGrab()

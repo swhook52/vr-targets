@@ -16,6 +16,8 @@ namespace HoloToolkit.Unity.InputModule.Examples.Grabbables
             base.StartGrab(grabber);
 
             transform.SetParent(GrabberPrimary.transform);
+            transform.rotation = grabber.GrabHandle.rotation;
+            transform.position = grabber.GrabHandle.position;
             gameObject.GetComponent<Rigidbody>().isKinematic = true;
         }
 

@@ -46,13 +46,15 @@ public class RaycastShoot: MonoBehaviour
             RaycastHit hit;
 
             // Set the start position for our visual effect for our laser to the position of gunEnd
-            laserLine.SetPosition(0, gunEnd.position);
+            if (laserLine != null)
+                laserLine.SetPosition(0, gunEnd.position);
 
             // Check if our raycast has hit anything
             if (Physics.Raycast(gunEnd.position, gunEnd.transform.forward, out hit, weaponRange))
             {
                 // Set the end position for our laser line 
-                laserLine.SetPosition(1, hit.point);
+                if (laserLine != null)
+                    laserLine.SetPosition(1, hit.point);
 
                 // Get a reference to a health script attached to the collider we hit
                 ShootableTarget health = hit.collider.GetComponent<ShootableTarget>();
@@ -74,7 +76,8 @@ public class RaycastShoot: MonoBehaviour
             else
             {
                 // If we did not hit anything, set the end of the line to a position directly in front of the camera at the distance of weaponRange
-                laserLine.SetPosition(1, gunEnd.position + (gunEnd.transform.forward * weaponRange));
+                if (laserLine != null)
+                    laserLine.SetPosition(1, gunEnd.position + (gunEnd.transform.forward * weaponRange));
             }
         }
 
@@ -95,12 +98,14 @@ public class RaycastShoot: MonoBehaviour
         }
 
         // Turn on our line renderer
-        laserLine.enabled = true;
+        if (laserLine != null)
+            laserLine.enabled = true;
 
         //Wait for .07 seconds
         yield return shotDuration;
 
         // Deactivate our line renderer after waiting
-        laserLine.enabled = false;
+        if (laserLine != null)
+            laserLine.enabled = false;
     }
 }
