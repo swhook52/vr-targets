@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
+using HoloToolkit.Unity.InputModule.Examples.Grabbables;
+using UnityEngine.XR.WSA.Input;
 
 public class RaycastShoot: MonoBehaviour
 {
@@ -12,7 +14,6 @@ public class RaycastShoot: MonoBehaviour
     private WaitForSeconds shotDuration = new WaitForSeconds(0.07f);    // WaitForSeconds object used by our ShotEffect coroutine, determines time laser line will remain visible
     private AudioSource gunAudio;                                       // Reference to the audio source which will play our shooting sound effect
     private LineRenderer laserLine;                                     // Reference to the LineRenderer component which will display our laserline
-    private float nextFire;                                             // Float to store the time the player will be allowed to fire again, after firing
     private Animator animator;
     private bool hammerPulled;
 
@@ -24,20 +25,70 @@ public class RaycastShoot: MonoBehaviour
         // Get and store a reference to our AudioSource component
         gunAudio = GetComponent<AudioSource>();
 
-        animator = GetComponent<Animator>();
+        animator = gameObject.GetComponent<Animator>();
     }
 
+    private bool Shooting()
+    {
+        if (!hammerPulled)
+            return false;
+
+        var parent = transform.parent;
+        if (parent == null)
+            return false;
+
+        var grabber = parent.GetComponent<Grabber>();
+        if (grabber == null)
+            return false;
+
+        if (grabber.Handedness == InteractionSourceHandedness.Left)
+        {
+            return Input.GetButtonDown("FireLeft");
+        }
+        else if (grabber.Handedness == InteractionSourceHandedness.Right)
+        {
+            return Input.GetButtonDown("FireRight");
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    private bool PullingHammer()
+    {
+        if (hammerPulled)
+            return false;
+
+        var parent = transform.parent;
+        if (parent == null)
+            return false;
+
+        var grabber = parent.GetComponent<Grabber>();
+        if (grabber == null)
+            return false;
+
+        if (grabber.Handedness == InteractionSourceHandedness.Left)
+        {
+            return Input.GetButtonDown("PullHammerLeft");
+        }
+        else if (grabber.Handedness == InteractionSourceHandedness.Right)
+        {
+            return Input.GetButtonDown("PullHammerRight");
+        }
+        else
+        {
+            return false;
+        }
+    }
 
     void Update()
     {
         // Check if the player has pressed the fire button and if enough time has elapsed since they last fired
-        if (Input.GetButtonDown("Fire1") && Time.time > nextFire)
+        if (Shooting())
         {
             hammerPulled = false;
             animator.SetTrigger("Shot2");
-
-            // Update the time when our player can fire next
-            nextFire = Time.time + fireRate;
 
             // Start our ShotEffect coroutine to turn our laser line on and off
             StartCoroutine(ShotEffect());
@@ -81,7 +132,7 @@ public class RaycastShoot: MonoBehaviour
             }
         }
 
-        if (Input.GetButtonDown("PullHammerLeft"))
+        if (PullingHammer())
         {
             hammerPulled = true;
             animator.SetTrigger("PrepareForShooting");
