@@ -87,8 +87,8 @@ public class RaycastShoot: MonoBehaviour
         // Check if the player has pressed the fire button and if enough time has elapsed since they last fired
         if (Shooting())
         {
-            //hammerPulled = false;
-            animator.SetTrigger("Shot2");
+            hammerPulled = false;
+            animator.SetTrigger("ShootGun");
 
             // Start our ShotEffect coroutine to turn our laser line on and off
             StartCoroutine(ShotEffect());
@@ -135,7 +135,7 @@ public class RaycastShoot: MonoBehaviour
         if (PullingHammer())
         {
             hammerPulled = true;
-            animator.SetTrigger("PrepareForShooting");
+            animator.SetTrigger("LoadGun");
         }
     }
 
