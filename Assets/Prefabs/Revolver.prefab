@@ -55,12 +55,12 @@ GameObject:
   - component: {fileID: 4672728534059462}
   - component: {fileID: 114692126102231390}
   - component: {fileID: 114193525514045112}
-  - component: {fileID: 114485324185853616}
   - component: {fileID: 54295231036423502}
   - component: {fileID: 64647069581875268}
   - component: {fileID: 82148542844713076}
   - component: {fileID: 114630483877101244}
   - component: {fileID: 95846847905799568}
+  - component: {fileID: 114109336308619348}
   m_Layer: 0
   m_Name: Revolver
   m_TagString: Untagged
@@ -729,6 +729,19 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &114109336308619348
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1082991642243414}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92fcfdc5fa8253c4c91b5a57df5ba8f9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  grabSpot: {fileID: 0}
+  grabStyle: 1
 --- !u!114 &114193525514045112
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -742,19 +755,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponRange: 50
   gunEnd: {fileID: 1184980050499716}
---- !u!114 &114485324185853616
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1082991642243414}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 92fcfdc5fa8253c4c91b5a57df5ba8f9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  grabSpot: {fileID: 0}
-  grabStyle: 0
 --- !u!114 &114630483877101244
 MonoBehaviour:
   m_ObjectHideFlags: 1

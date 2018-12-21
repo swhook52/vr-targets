@@ -2,6 +2,7 @@
 using System.Collections;
 using HoloToolkit.Unity.InputModule.Examples.Grabbables;
 using UnityEngine.XR.WSA.Input;
+using System;
 
 public class RaycastShoot: MonoBehaviour
 {
@@ -16,6 +17,7 @@ public class RaycastShoot: MonoBehaviour
     private LineRenderer laserLine;                                     // Reference to the LineRenderer component which will display our laserline
     private Animator animator;
     private bool hammerPulled;
+    private bool cylinderOpen;
 
     void Start()
     {
@@ -26,11 +28,18 @@ public class RaycastShoot: MonoBehaviour
         gunAudio = GetComponent<AudioSource>();
 
         animator = gameObject.GetComponent<Animator>();
+
+        InteractionManager.InteractionSourceUpdated += InteractionSourceUpdated;
     }
 
-    private bool Shooting()
+    private void OnDestroy()
     {
-        if (!hammerPulled)
+        InteractionManager.InteractionSourceUpdated -= InteractionSourceUpdated;
+    }
+
+    private bool Shooting(InteractionSourceState state)
+    {
+        if (!hammerPulled || cylinderOpen)
             return false;
 
         var parent = transform.parent;
@@ -41,23 +50,13 @@ public class RaycastShoot: MonoBehaviour
         if (grabber == null)
             return false;
 
-        if (grabber.Handedness == InteractionSourceHandedness.Left)
-        {
-            return Input.GetButtonDown("FireLeft");
-        }
-        else if (grabber.Handedness == InteractionSourceHandedness.Right)
-        {
-            return Input.GetButtonDown("FireRight");
-        }
-        else
-        {
-            return false;
-        }
+        return grabber.Handedness == state.source.handedness && state.selectPressed;
+
     }
 
-    private bool PullingHammer()
+    private bool PullingHammer(InteractionSourceState state)
     {
-        if (hammerPulled)
+        if (hammerPulled || cylinderOpen)
             return false;
 
         var parent = transform.parent;
@@ -68,24 +67,85 @@ public class RaycastShoot: MonoBehaviour
         if (grabber == null)
             return false;
 
-        if (grabber.Handedness == InteractionSourceHandedness.Left)
-        {
-            return Input.GetButtonDown("PullHammerLeft");
-        }
-        else if (grabber.Handedness == InteractionSourceHandedness.Right)
-        {
-            return Input.GetButtonDown("PullHammerRight");
-        }
-        else
-        {
-            return false;
-        }
+        return grabber.Handedness == state.source.handedness && PressedDownOnTouchpad(state);
     }
 
-    void Update()
+    private bool OpeningCylinder(InteractionSourceState state)
     {
-        // Check if the player has pressed the fire button and if enough time has elapsed since they last fired
-        if (Shooting())
+        if (cylinderOpen || hammerPulled)
+            return false;
+
+        var parent = transform.parent;
+        if (parent == null)
+            return false;
+
+        var grabber = parent.GetComponent<Grabber>();
+        if (grabber == null)
+            return false;
+
+        return grabber.Handedness == state.source.handedness && PressedLeftOnTouchpad(state);
+    }
+
+    private bool ClosingCylinder(InteractionSourceState state)
+    {
+        if (!cylinderOpen || hammerPulled)
+            return false;
+
+        var parent = transform.parent;
+        if (parent == null)
+            return false;
+
+        var grabber = parent.GetComponent<Grabber>();
+        if (grabber == null)
+            return false;
+
+        return grabber.Handedness == state.source.handedness && PressedRightOnTouchpad(state);
+    }
+
+    private bool PressedDownOnTouchpad(InteractionSourceState state)
+    {
+        return state.touchpadPressed && state.touchpadPosition.normalized.y <= -0.5f &&
+            state.touchpadPosition.normalized.x > -0.5f &&
+            state.touchpadPosition.normalized.x < 0.5f; ;
+    }
+
+    private bool PressedLeftOnTouchpad(InteractionSourceState state)
+    {
+        return state.touchpadPressed && state.touchpadPosition.normalized.x <= -0.5f && 
+            state.touchpadPosition.normalized.y > -0.5f &&
+            state.touchpadPosition.normalized.y < 0.5f;
+    }
+
+    private bool PressedRightOnTouchpad(InteractionSourceState state)
+    {
+        return state.touchpadPressed && state.touchpadPosition.normalized.x >= 0.5f &&
+            state.touchpadPosition.normalized.y > -0.5f &&
+            state.touchpadPosition.normalized.y < 0.5f; ;
+    }
+
+    private IEnumerator ShotEffect()
+    {
+        // Play the shooting sound effect
+        if (gunAudio)
+        {
+            gunAudio.Play();
+        }
+
+        // Turn on our line renderer
+        if (laserLine != null)
+            laserLine.enabled = true;
+
+        //Wait for .07 seconds
+        yield return shotDuration;
+
+        // Deactivate our line renderer after waiting
+        if (laserLine != null)
+            laserLine.enabled = false;
+    }
+
+    private void InteractionSourceUpdated(InteractionSourceUpdatedEventArgs controller)
+    {
+        if (Shooting(controller.state))
         {
             hammerPulled = false;
             animator.SetTrigger("ShootGun");
@@ -132,31 +192,22 @@ public class RaycastShoot: MonoBehaviour
             }
         }
 
-        if (PullingHammer())
+        if (PullingHammer(controller.state))
         {
             hammerPulled = true;
             animator.SetTrigger("LoadGun");
         }
-    }
 
-
-    private IEnumerator ShotEffect()
-    {
-        // Play the shooting sound effect
-        if (gunAudio)
+        if (OpeningCylinder(controller.state))
         {
-            gunAudio.Play();
+            cylinderOpen = true;
+            animator.SetTrigger("OpenCylinder");
         }
 
-        // Turn on our line renderer
-        if (laserLine != null)
-            laserLine.enabled = true;
-
-        //Wait for .07 seconds
-        yield return shotDuration;
-
-        // Deactivate our line renderer after waiting
-        if (laserLine != null)
-            laserLine.enabled = false;
+        if (ClosingCylinder(controller.state))
+        {
+            cylinderOpen = false;
+            animator.SetTrigger("CloseCylinder");
+        }
     }
 }
