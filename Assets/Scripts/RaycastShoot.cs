@@ -134,8 +134,7 @@ public class RaycastShoot: MonoBehaviour
 
         if (muzzleFlash)
         {
-            var particleSystem = muzzleFlash.GetComponent<ParticleSystem>();
-            particleSystem.Play();
+            StartCoroutine(ShowMuzzleFlash());
         }
 
         // Turn on our line renderer
@@ -148,6 +147,17 @@ public class RaycastShoot: MonoBehaviour
         // Deactivate our line renderer after waiting
         if (laserLine != null)
             laserLine.enabled = false;
+    }
+
+    private IEnumerator ShowMuzzleFlash()
+    {
+        if (muzzleFlash.activeInHierarchy)
+        {
+            muzzleFlash.SetActive(true);
+        }
+
+        yield return new WaitForSeconds(0.1f);
+        muzzleFlash.SetActive(false);
     }
 
     private void InteractionSourceUpdated(InteractionSourceUpdatedEventArgs controller)

@@ -3,21 +3,33 @@ using UnityEngine;
 
 public class GrabbableChildWithOrient : BaseGrabbable
 {
+    private bool _grabbing;
+
     protected override void StartGrab(BaseGrabber grabber)
     {
-        base.StartGrab(grabber);
+        if (!_grabbing)
+        {
+            _grabbing = true;
+            base.StartGrab(grabber);
 
-        transform.SetParent(GrabberPrimary.transform);
-        transform.rotation = grabber.GrabHandle.rotation;
-        transform.position = grabber.GrabHandle.position;
-        gameObject.GetComponent<Rigidbody>().isKinematic = true;
+            transform.SetParent(GrabberPrimary.transform);
+            transform.rotation = grabber.GrabHandle.rotation;
+            transform.position = grabber.GrabHandle.position;
+            gameObject.GetComponent<Rigidbody>().isKinematic = true;
+        }
+        else
+        {
+            _grabbing = false;
+            transform.SetParent(null);
+            gameObject.GetComponent<Rigidbody>().isKinematic = false;
+            base.EndGrab();
+        }
+
     }
 
     protected override void EndGrab()
     {
-        transform.SetParent(null);
-        gameObject.GetComponent<Rigidbody>().isKinematic = false;
-        base.EndGrab();
+        // Grabbing is toggle based for this script
     }
 
     protected override void AttachToGrabber(BaseGrabber grabber)
