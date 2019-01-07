@@ -151,12 +151,14 @@ public class RaycastShoot: MonoBehaviour
 
     private IEnumerator ShowMuzzleFlash()
     {
-        if (muzzleFlash.activeInHierarchy)
+        if (!muzzleFlash.activeInHierarchy)
         {
+            var random = new System.Random();
+            muzzleFlash.transform.Rotate(new Vector3(muzzleFlash.transform.rotation.x, muzzleFlash.transform.rotation.y, random.Next(0, 360)));
             muzzleFlash.SetActive(true);
         }
 
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(0.02f);
         muzzleFlash.SetActive(false);
     }
 

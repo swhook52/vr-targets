@@ -7,29 +7,19 @@ public class GrabbableChildWithOrient : BaseGrabbable
 
     protected override void StartGrab(BaseGrabber grabber)
     {
-        if (!_grabbing)
-        {
-            _grabbing = true;
-            base.StartGrab(grabber);
+        base.StartGrab(grabber);
 
-            transform.SetParent(GrabberPrimary.transform);
-            transform.rotation = grabber.GrabHandle.rotation;
-            transform.position = grabber.GrabHandle.position;
-            gameObject.GetComponent<Rigidbody>().isKinematic = true;
-        }
-        else
-        {
-            _grabbing = false;
-            transform.SetParent(null);
-            gameObject.GetComponent<Rigidbody>().isKinematic = false;
-            base.EndGrab();
-        }
-
+        transform.SetParent(GrabberPrimary.transform);
+        transform.rotation = grabber.GrabHandle.rotation;
+        transform.position = grabber.GrabHandle.position;
+        gameObject.GetComponent<Rigidbody>().isKinematic = true;
     }
 
     protected override void EndGrab()
     {
-        // Grabbing is toggle based for this script
+        transform.SetParent(null);
+        gameObject.GetComponent<Rigidbody>().isKinematic = false;
+        base.EndGrab();
     }
 
     protected override void AttachToGrabber(BaseGrabber grabber)
